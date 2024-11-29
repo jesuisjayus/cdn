@@ -34,7 +34,7 @@ class LFUCache:
         self.frequency[key] = 1
 
 app = Flask(__name__)
-ORIGIN_SERVER = 'http://localhost:8000' 
+ORIGIN_SERVER = 'http://3.3.3.3:8000' 
 
 image_cache = LFUCache(capacity=3)
 
@@ -54,4 +54,4 @@ def get_image(image_name):
     return 'Image not found', 404
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='2.2.2.2', port=5000)

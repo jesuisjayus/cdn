@@ -16,4 +16,4 @@ def get_image(image_name):
     return 'Image not found', 404
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='3.3.3.3', port=8000)
