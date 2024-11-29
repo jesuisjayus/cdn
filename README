@@ -4,3 +4,6 @@ pip install flask requests
 
 puis lancer les programmes
 
+
+curl http://2.2.2.2:5000/mickey.jpg
+
