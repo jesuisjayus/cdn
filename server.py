@@ -4,7 +4,6 @@ import requests
 from flask import Flask, Response
 from collections import OrderedDict
 
-# Variables configurables
 DEFAULT_CACHE_CAPACITY_BYTES = 10 * 1024 * 1024  # 10 MB
 DEFAULT_CACHE_DIR = 'cache'
 DEFAULT_ORIGIN_SERVER = 'http://localhost:8000'
