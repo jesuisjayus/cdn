@@ -4,8 +4,17 @@ import requests
 from flask import Flask, Response
 from collections import OrderedDict
 
+# Variables configurables
+DEFAULT_CACHE_CAPACITY_BYTES = 10 * 1024 * 1024  # 10 MB
+DEFAULT_CACHE_DIR = 'cache'
+DEFAULT_ORIGIN_SERVER = 'http://localhost:8000'
+DEFAULT_FLASK_HOST = '0.0.0.0'
+DEFAULT_FLASK_PORT = 5000
+DEFAULT_IMAGE_MIMETYPE = 'image/webp'
+DEFAULT_TIMEOUT_SECONDS = 5
+
 class LFUCache:
-    def __init__(self, capacity_bytes=5 * 1024 * 1024, cache_dir='cache'):
+    def __init__(self, capacity_bytes=DEFAULT_CACHE_CAPACITY_BYTES, cache_dir=DEFAULT_CACHE_DIR):
         self.capacity_bytes = capacity_bytes
         self.current_size = 0
         self.cache_dir = cache_dir
@@ -70,9 +79,9 @@ class LFUCache:
         self.save_frequency()
 
 app = Flask(__name__)
-ORIGIN_SERVER = 'http://localhost:8000' 
+ORIGIN_SERVER = DEFAULT_ORIGIN_SERVER
 
-image_cache = LFUCache(capacity_bytes=10 * 1024 * 1024)  
+image_cache = LFUCache(capacity_bytes=DEFAULT_CACHE_CAPACITY_BYTES, cache_dir=DEFAULT_CACHE_DIR)
 
 @app.route('/<image_name>', methods=['GET'])
 def get_image(image_name):
@@ -80,14 +89,14 @@ def get_image(image_name):
     if cached_image:
         return Response(cached_image, mimetype='image/jpg')
     try:
-        response = requests.get(f'{ORIGIN_SERVER}/{image_name}', timeout=5)
+        response = requests.get(f'{ORIGIN_SERVER}/{image_name}', timeout=DEFAULT_TIMEOUT_SECONDS)
         if response.status_code == 200:
             image_cache.put(image_name, response.content)
-            return Response(response.content, mimetype=response.headers.get('Content-Type', 'image/webp'))
+            return Response(response.content, mimetype=response.headers.get('Content-Type', DEFAULT_IMAGE_MIMETYPE))
     except requests.RequestException:
         pass
 
     return 'Image not found', 404
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host=DEFAULT_FLASK_HOST, port=DEFAULT_FLASK_PORT)
